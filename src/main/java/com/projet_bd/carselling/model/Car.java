@@ -24,6 +24,8 @@ public class Car {
     private Double price;
     private String numChassi;
 
+    private List<String> imageLinks;
+
     @OneToMany(mappedBy = "car", fetch = FetchType.EAGER)
     private List<Photo> listImages;
 

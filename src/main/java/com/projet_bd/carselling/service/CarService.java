@@ -43,28 +43,10 @@ public class CarService {
         }
     }
 
-    @Transactional
-    public Car saveCar(Car car, MultipartFile file) {
-
+   // @Transactional
+    public Car saveCar(Car car) {
         try {
-            EntityManager entityManager = entityManagerFactory.createEntityManager();
-            EntityTransaction entityTransaction = entityManager.getTransaction();
-
-            entityTransaction.begin();
-            Photo photo;
-            photo = storageService.store(file, car);
-
-            if(car.getListImages() == null){
-                car.setListImages(List.of(photo));
-            }else{
-                car.getListImages().add(photo);
-            }
-            photo.setCar(car);
-            Car body = entityManager.merge(car);
-
-            entityTransaction.commit();
-
-            return carRepository.save(body);
+            return carRepository.save(car);
         }
         catch (Exception e) {
             return null;

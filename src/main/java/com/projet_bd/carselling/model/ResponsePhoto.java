@@ -11,5 +11,6 @@ import lombok.RequiredArgsConstructor;
 public class ResponsePhoto {
     private String name;
     private String url;
-    private String carName;
+    private String type;
+    private long size;
 }

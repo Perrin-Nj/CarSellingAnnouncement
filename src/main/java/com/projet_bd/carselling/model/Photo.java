@@ -20,17 +20,23 @@ public class Photo {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    private String photoName;
+    private String name;
 
-    @Column(name = "image", columnDefinition="BLOB")
-    private byte[] image;
+    private String type;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Lob
+    private byte[] data;
+
+    private String photoUrl;
+
+    @JsonIgnore
+    @ManyToOne(cascade=CascadeType.ALL)
     private Car car;
 
-    public Photo(String photoName, byte[] byteImage){
-        this.photoName = photoName;
-        this.image = byteImage;
+    public Photo(String name, String type, byte[] data) {
+        this.name = name;
+        this.type = type;
+        this.data = data;
     }
 }
