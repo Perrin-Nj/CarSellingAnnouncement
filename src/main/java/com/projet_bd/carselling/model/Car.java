@@ -27,7 +27,7 @@ public class Car {
 
     @Column(unique = true)
     private String numChassi;
-
+    
     private List<String> imageLinks;
 
     @OneToOne(mappedBy = "car")
