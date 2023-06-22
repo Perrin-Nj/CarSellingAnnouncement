@@ -26,6 +26,9 @@ public class Car {
 
     private List<String> imageLinks;
 
+    @OneToOne(mappedBy = "car")
+    private Announcement announcement;
+
     @OneToMany(mappedBy = "car", fetch = FetchType.EAGER)
     private List<Photo> listImages;
 
