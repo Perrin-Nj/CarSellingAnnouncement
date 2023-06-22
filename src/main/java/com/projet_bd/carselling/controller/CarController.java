@@ -68,7 +68,6 @@ public class CarController {
         Car car = carService.saveCar(postedCar);
 
         return ResponseEntity.ok(car);
-        // ...
     }
 
     @GetMapping("/cars")
@@ -92,11 +91,6 @@ public class CarController {
         List<Photo> photos = photoRepository.findAll();
         List<Car> carListFinal = new ArrayList<>();
 
-        System.out.print("car LIst ==> ");/*
-        System.out.println(cars.get(0).getName());
-        System.out.print("PHOTO LIST ===> ");
-        System.out.println(responsePhotos.stream().toString());
-        */
         //init links
         for(Car car: cars){
             car.setImageLinks(new ArrayList<>());
@@ -105,11 +99,9 @@ public class CarController {
         for(ResponsePhoto responsePhoto: responsePhotos){
             for(Photo photo: photos){
                 for(Car car: cars){
-                    System.out.println("YOOOO");
+
                     if(responsePhoto.getName().equals(photo.getName())){
-                        //System.out.println("hiiiii2");
                         if(photo.getCar().getId().equals(car.getId())){
-                            //System.out.println("hiiiii3");
                             car.getImageLinks().add(responsePhoto.getUrl());
                         }
                     }
@@ -155,7 +147,6 @@ public class CarController {
     }
     @GetMapping("/car/name/{name}/")
     public ResponseEntity<?> findCarByName(@PathVariable("name") String name){
-        System.out.println("name ===> "+name);
         Car car = carService.findCarByName(name);
 
         if(car == null) return ResponseEntity.badRequest().body("No car with the specified name");
@@ -178,9 +169,7 @@ public class CarController {
         for(ResponsePhoto responsePhoto: photoResponses){
             for(Photo photo: photos){
                 if(responsePhoto.getName().equals(photo.getName())){
-                    //System.out.println("hiiiii2");
                     if(photo.getCar().getId().equals(car.getId())){
-                        //System.out.println("hiiiii3");
                         car.getImageLinks().add(responsePhoto.getUrl());
                     }
                 }
@@ -212,9 +201,7 @@ public class CarController {
         for(ResponsePhoto responsePhoto: photoResponses){
             for(Photo photo: photos){
                 if(responsePhoto.getName().equals(photo.getName())){
-                    //System.out.println("hiiiii2");
                     if(photo.getCar().getId().equals(car.getId())){
-                        //System.out.println("hiiiii3");
                         car.getImageLinks().add(responsePhoto.getUrl());
                     }
                 }
@@ -223,118 +210,135 @@ public class CarController {
         return ResponseEntity.ok(car);
     }
 
-  /*  @GetMapping("/car/marque/{marque}")
-    public ResponseEntity<?> findCarByMarque(@PathVariable("id") String marque){
-        Car car = carService.findByCarMarque(marque);
-        if(car == null) return ResponseEntity.badRequest().body("No car with the specified marque");
-        car.setImageLinks(new ArrayList<>());
-        List<ResponsePhoto> photoResponses = storageService.getAllFiles().map(dbFile -> {
-            String fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(dbFile.getId())
-                    .toUriString();
+    @GetMapping("/cars/marque/{marque}")
+    public ResponseEntity<?> getCarsByMarque(@PathVariable("marque") String  marque) {
+        try{
+            List<Car> cars = carService.findByCarMarque(marque);
+            List<ResponsePhoto> responsePhotos = storageService.getAllFiles().map(dbFile -> {
+                String fileDownloadUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/files/")
+                        .path(dbFile.getId())
+                        .toUriString();
 
-            return new ResponsePhoto(
-                    dbFile.getName(),
-                    fileDownloadUri,
-                    dbFile.getType(),
-                    dbFile.getData().length);
-        }).collect(Collectors.toList());
-        List<Photo> photos = photoRepository.findAll();
+                return new ResponsePhoto(
+                        dbFile.getName(),
+                        fileDownloadUri,
+                        dbFile.getType(),
+                        dbFile.getData().length);
+            }).collect(Collectors.toList());
 
-        for(ResponsePhoto responsePhoto: photoResponses){
-            for(Photo photo: photos){
-                if(responsePhoto.getName().equals(photo.getName())){
-                    //System.out.println("hiiiii2");
-                    if(photo.getCar().getId().equals(car.getId())){
-                        //System.out.println("hiiiii3");
-                        car.getImageLinks().add(responsePhoto.getUrl());
+            List<Photo> photos = photoRepository.findAll();
+            List<Car> carListFinal = new ArrayList<>();
+
+            //init links
+            for(Car car: cars){
+                car.setImageLinks(new ArrayList<>());
+            }
+
+            for(ResponsePhoto responsePhoto: responsePhotos){
+                for(Photo photo: photos){
+                    for(Car car: cars){
+
+                        if(responsePhoto.getName().equals(photo.getName())){
+                            if(photo.getCar().getId().equals(car.getId())){
+                                car.getImageLinks().add(responsePhoto.getUrl());
+                            }
+                        }
+                        carListFinal.add(car);
                     }
                 }
             }
+            return ResponseEntity.status(HttpStatus.OK).body(cars);}catch ( Exception e){
+            return ResponseEntity.badRequest().body("An error occured, an image name should be unique");
         }
-        return ResponseEntity.ok(car);
-    }*/
-/*
-    @GetMapping("/car/prix/{prix}")
-    public ResponseEntity<?> findCarByPrix(@PathVariable("id") Double prix){
-        Car car = carService.findByCarPrice(prix);
-        if(car == null) return ResponseEntity.badRequest().body("No car with the specified price");
-        car.setImageLinks(new ArrayList<>());
-        List<ResponsePhoto> photoResponses = storageService.getAllFiles().map(dbFile -> {
-            String fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(dbFile.getId())
-                    .toUriString();
-
-            return new ResponsePhoto(
-                    dbFile.getName(),
-                    fileDownloadUri,
-                    dbFile.getType(),
-                    dbFile.getData().length);
-        }).collect(Collectors.toList());
-        List<Photo> photos = photoRepository.findAll();
-
-        for(ResponsePhoto responsePhoto: photoResponses){
-            for(Photo photo: photos){
-                if(responsePhoto.getName().equals(photo.getName())){
-                    //System.out.println("hiiiii2");
-                    if(photo.getCar().getId().equals(car.getId())){
-                        //System.out.println("hiiiii3");
-                        car.getImageLinks().add(responsePhoto.getUrl());
-                    }
-                }
-            }
-        }
-        return ResponseEntity.ok(car);
     }
 
+    @GetMapping("/cars/type/{type}")
+    public ResponseEntity<?> getCarsByType(@PathVariable("type") String  type) {
+        try{
+            List<Car> cars = carService.findByCarsType(type);
+            List<ResponsePhoto> responsePhotos = storageService.getAllFiles().map(dbFile -> {
+                String fileDownloadUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/files/")
+                        .path(dbFile.getId())
+                        .toUriString();
 
-    @GetMapping("/car/type/{type}")
-    public ResponseEntity<?> findCarByType(@PathVariable("type") String type){
-        Car car = carService.findByCarType(type);
-        if(car == null) return ResponseEntity.badRequest().body("No car with the specified type");
-        car.setImageLinks(new ArrayList<>());
-        List<ResponsePhoto> photoResponses = storageService.getAllFiles().map(dbFile -> {
-            String fileDownloadUri = ServletUriComponentsBuilder
-                    .fromCurrentContextPath()
-                    .path("/files/")
-                    .path(dbFile.getId())
-                    .toUriString();
+                return new ResponsePhoto(
+                        dbFile.getName(),
+                        fileDownloadUri,
+                        dbFile.getType(),
+                        dbFile.getData().length);
+            }).collect(Collectors.toList());
 
-            return new ResponsePhoto(
-                    dbFile.getName(),
-                    fileDownloadUri,
-                    dbFile.getType(),
-                    dbFile.getData().length);
-        }).collect(Collectors.toList());
-        List<Photo> photos = photoRepository.findAll();
+            List<Photo> photos = photoRepository.findAll();
+            List<Car> carListFinal = new ArrayList<>();
 
-        for(ResponsePhoto responsePhoto: photoResponses){
-            for(Photo photo: photos){
-                if(responsePhoto.getName().equals(photo.getName())){
-                    //System.out.println("hiiiii2");
-                    if(photo.getCar().getId().equals(car.getId())){
-                        //System.out.println("hiiiii3");
-                        car.getImageLinks().add(responsePhoto.getUrl());
+            //init links
+            for(Car car: cars){
+                car.setImageLinks(new ArrayList<>());
+            }
+
+            for(ResponsePhoto responsePhoto: responsePhotos){
+                for(Photo photo: photos){
+                    for(Car car: cars){
+
+                        if(responsePhoto.getName().equals(photo.getName())){
+                            if(photo.getCar().getId().equals(car.getId())){
+                                car.getImageLinks().add(responsePhoto.getUrl());
+                            }
+                        }
+                        carListFinal.add(car);
                     }
                 }
             }
+            return ResponseEntity.status(HttpStatus.OK).body(cars);}catch ( Exception e){
+            return ResponseEntity.badRequest().body("An error occured, an image name should be unique");
         }
-        return ResponseEntity.ok(car);
     }
-*/
 
-/*
-        @GetMapping("/files/{id}")
-        public ResponseEntity<byte[]> getFile(@PathVariable String id) {
-            FileDB fileDB = storageService.getFile(id);
+    @GetMapping("/cars/price/{price}")
+    public ResponseEntity<?> getCarsByPrice(@PathVariable("price") Double  price) {
+        try{
+            List<Car> cars = carService.findByCarPrice(price);
+            List<ResponsePhoto> responsePhotos = storageService.getAllFiles().map(dbFile -> {
+                String fileDownloadUri = ServletUriComponentsBuilder
+                        .fromCurrentContextPath()
+                        .path("/files/")
+                        .path(dbFile.getId())
+                        .toUriString();
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
-                    .body(fileDB.getData());
+                return new ResponsePhoto(
+                        dbFile.getName(),
+                        fileDownloadUri,
+                        dbFile.getType(),
+                        dbFile.getData().length);
+            }).collect(Collectors.toList());
+
+            List<Photo> photos = photoRepository.findAll();
+            List<Car> carListFinal = new ArrayList<>();
+
+            //init links
+            for(Car car: cars){
+                car.setImageLinks(new ArrayList<>());
+            }
+
+            for(ResponsePhoto responsePhoto: responsePhotos){
+                for(Photo photo: photos){
+                    for(Car car: cars){
+                        if(responsePhoto.getName().equals(photo.getName())){
+                            if(photo.getCar().getId().equals(car.getId())){
+                                car.getImageLinks().add(responsePhoto.getUrl());
+                            }
+                        }
+                        carListFinal.add(car);
+                    }
+                }
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(cars);}catch ( Exception e){
+            return ResponseEntity.badRequest().body("An error occured, an image name should be unique");
         }
-*/
+    }
+
 }
