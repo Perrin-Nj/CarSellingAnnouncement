@@ -56,17 +56,19 @@ public class CarService {
     public Car findCarByName(String carName) {
 
         try {
-            return carRepository.findByName(carName);
+            return carRepository.findCarByName(carName);
         }
         catch (Exception e) {
+            System.out.println("can't find it");
+            e.printStackTrace();
             return null;
         }
     }
 
-    public Car findByCarType(String carType) {
+    public List<Car> findByCarsType(String carType) {
 
         try {
-            return carRepository.findByType(carType);
+            return carRepository.findCarsByType(carType);
         }
         catch (Exception e) {
             return null;
@@ -76,27 +78,27 @@ public class CarService {
     public Car findByCarChassi(String numChassi) {
 
         try {
-            return carRepository.findByType(numChassi);
+            return carRepository.findCarByNumChassi(numChassi);
         }
         catch (Exception e) {
             return null;
         }
     }
 
-    public Car findByCarPrice(Double carPrice) {
+    public List<Car> findByCarPrice(Double carPrice) {
 
         try {
-            return carRepository.findByPrice(carPrice);
+            return carRepository.findCarsByPrice(carPrice);
         }
         catch (Exception e) {
             return null;
         }
     }
 
-    public Car findByCarMarque(String carMarque) {
+    public List<Car> findByCarMarque(String carMarque) {
 
         try {
-            return carRepository.findByType(carMarque);
+            return carRepository.findCarsByMarque(carMarque);
         }
         catch (Exception e) {
             return null;

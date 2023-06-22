@@ -2,16 +2,20 @@ package com.projet_bd.carselling.repository;
 
 import com.projet_bd.carselling.model.Car;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface CarRepository extends JpaRepository<Car, Long> {
 
-    Car findByName(String name);
+    Car findCarByName(String name);
 
-    Car findByMarque(String marque);
+    List<Car> findCarsByMarque(String marque);
 
-    Car findByType(String type);
+    List<Car> findCarsByType(String type);
 
-    Car findByPrice(Double price);
+    List<Car> findCarsByPrice(Double price);
 
-    Car findByNumChassi(String numChassi);
+    Car findCarByNumChassi(String numChassi);
 }

@@ -18,10 +18,14 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(unique = true)
     private String name;
+
     private String marque;
     private String type;
     private Double price;
+
+    @Column(unique = true)
     private String numChassi;
 
     private List<String> imageLinks;
