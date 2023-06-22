@@ -27,8 +27,7 @@ public class Photo {
     private String type;
 
    @JsonIgnore
-   @Column(name = "data", columnDefinition="BLOB")
-   //@Lob
+   @Lob
    private byte[] data;
 
     @JsonIgnore

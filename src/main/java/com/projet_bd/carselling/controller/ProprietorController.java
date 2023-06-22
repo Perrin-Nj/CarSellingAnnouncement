@@ -1,6 +1,7 @@
 package com.projet_bd.carselling.controller;
-/*
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import com.projet_bd.carselling.service.ProprietorService;
 
 import lombok.RequiredArgsConstructor;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/v1/proprietor")
 @RequiredArgsConstructor
@@ -93,4 +95,3 @@ public class ProprietorController {
 
     }
 }
-*/

@@ -1,9 +1,11 @@
 package com.projet_bd.carselling.controller;
 
 
+import com.projet_bd.carselling.model.Car;
 import com.projet_bd.carselling.model.Photo;
 import com.projet_bd.carselling.model.ResponseMessage;
 import com.projet_bd.carselling.model.ResponsePhoto;
+import com.projet_bd.carselling.service.CarService;
 import com.projet_bd.carselling.service.PhotoStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -25,22 +27,41 @@ public class PhotoController {
 
     @Autowired
     private PhotoStorageService storageService;
-/*
-    @PostMapping("/upload")
-    public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("photos") List<MultipartFile> photos) {
-        String message = "";
-        try {
-            for (MultipartFile photo: photos){
-                storageService.store(photo);
+
+    @Autowired
+    private CarService carService;
+
+
+    @PostMapping("car/{id}/photo")
+    public ResponseEntity<ResponseMessage> uploadFile(
+            @PathVariable("id") Long id,
+            @RequestParam("photo") MultipartFile[] photos,
+            @RequestParam("name") String name,
+            @RequestParam("marque") String marque,
+            @RequestParam("type") String type,
+            @RequestParam("prix") Double prix,
+            @RequestParam("titre") String title,
+            @RequestParam("description") String description
+
+            ) {
+            String message = "";
+            Car car = carService.findById(id);
+            
+            try {
+                
+                for (MultipartFile photo: photos){
+                    storageService.store(photo, car);
+                }
+                message = "Uploaded file(s) successfully: ";
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+            } catch (Exception e) {
+                e.printStackTrace();
+                message = "Could not upload the file: 'File size should exceed 200MB, make sure the file is not corrupted'!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
             }
-            message = "Uploaded file(s) successfully: ";
-            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
-        } catch (Exception e) {
-            message = "Could not upload the file: 'File size should exceed 200MB, make sure the file is not corrupted'!";
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
-        }
     }
-*/
+    
+    
     @GetMapping("/files")
     public ResponseEntity<List<ResponsePhoto>> getListFiles() {
         List<ResponsePhoto> files = storageService.getAllFiles().map(dbFile -> {
@@ -68,4 +89,6 @@ public class PhotoController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileDB.getName() + "\"")
                 .body(fileDB.getData());
     }
+
+
 }
