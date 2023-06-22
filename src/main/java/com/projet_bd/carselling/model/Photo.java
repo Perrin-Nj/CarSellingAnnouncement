@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import java.util.List;
 
@@ -25,11 +26,10 @@ public class Photo {
 
     private String type;
 
-    @JsonIgnore
-    @Lob
-    private byte[] data;
-
-    private String photoUrl;
+   @JsonIgnore
+   @Column(name = "data", columnDefinition="BLOB")
+   //@Lob
+   private byte[] data;
 
     @JsonIgnore
     @ManyToOne(cascade=CascadeType.ALL)
