@@ -1,0 +1,7 @@
+FROM postgres
+
+ENV POSTGRES_DB car_sell_db
+
+ENV POSTGRES_USER spring_user
+
+ENV POSTGRES_PASSWORD ;mksMkdkjf@gjl!KKjslf**jfks;

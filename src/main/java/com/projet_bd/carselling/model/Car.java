@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -18,17 +19,23 @@ public class Car {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String marque;
+    
+    @Column(nullable = false)
     private String type;
+
+    @Column(nullable = false)
     private Double price;
 
-    @Column(unique = true)
-    private String numChassi;
-
+    @Transient
     private List<String> imageLinks;
+
+    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL)
+    private Announcement announcement;
 
     @OneToMany(mappedBy = "car", fetch = FetchType.EAGER)
     private List<Photo> listImages;

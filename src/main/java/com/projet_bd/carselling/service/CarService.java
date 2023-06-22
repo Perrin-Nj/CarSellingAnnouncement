@@ -1,11 +1,13 @@
 package com.projet_bd.carselling.service;
 
+import com.projet_bd.carselling.model.Announcement;
 import com.projet_bd.carselling.model.Car;
 import com.projet_bd.carselling.model.Photo;
 import com.projet_bd.carselling.repository.CarRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,6 @@ public class CarService {
 
     private final CarRepository carRepository;
     private final PhotoStorageService storageService;
-
 
     private final EntityManagerFactory entityManagerFactory;
 
@@ -56,7 +57,7 @@ public class CarService {
     public Car findCarByName(String carName) {
 
         try {
-            return carRepository.findCarByName(carName);
+            return carRepository.findByName(carName);
         }
         catch (Exception e) {
             System.out.println("can't find it");
@@ -69,16 +70,6 @@ public class CarService {
 
         try {
             return carRepository.findCarsByType(carType);
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }
-
-    public Car findByCarChassi(String numChassi) {
-
-        try {
-            return carRepository.findCarByNumChassi(numChassi);
         }
         catch (Exception e) {
             return null;
@@ -103,6 +94,44 @@ public class CarService {
         catch (Exception e) {
             return null;
         }
+    }
+
+    public boolean deleteCar(Long id) {
+        
+        try {
+            carRepository.deleteById(id);
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean delete(Long id) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        transaction.begin();
+
+        Car car = entityManager.find(Car.class, id);
+        
+        Query query = entityManager.createNativeQuery("delete from announcement where announcement.car_id=:id");
+        query.setParameter("id", car.getId());
+        query.executeUpdate();
+
+        query = entityManager.createNativeQuery("delete from photo where photo.car_id=:id");
+        query.setParameter("id",car.getId());
+        query.executeUpdate();
+
+        query = entityManager.createNativeQuery("delete from car where car.id=:id");
+        query.setParameter("id", car.getId());
+        query.executeUpdate();
+    
+        transaction.commit();
+        entityManager.close();
+
+        return true;
     }
 
 }
